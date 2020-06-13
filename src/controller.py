@@ -10,20 +10,25 @@ from src import coin
 
 class Controller:
     def __init__(self, width=800, height=400):
-        pygame.init()
         self.screen = pygame.display.set_mode((width, height))
-        self.background_pic = pygame.image.load('assets/Sprites/space.png')
+        self.clock = pygame.time.Clock()
+        self.FPS = 60
+        self.background= pygame.image.load('assets/Sprites/space.png').convert_alpha()
         self.state = "BEGIN"
-        self.hero_state = "RUN"
         self.width = width
         self.height = height
         self.white = (255,255,255)
         self.jump = True
         self.run = True
-        self.hero = hero.Hero("Johnny", self.width / 3, self.height / 3, "assets/Sprites/run 1.png", "right", "RUN")
+        self.hero = hero.Hero("Johnny", 100, 265, "assets/Sprites/run 1.png")
         self.wall = wall.Wall(self.width / 4, self.height - 240, 'assets/Sprites/stoneWall.png')
         self.coin = coin.Coin(self.width / 5, self.height - 240, 'assets/Sprites/goldCoin1.png')
-        self.bullet = bullet.Bullet(self.hero.rect.centerx, self.hero.rect.centery,self.hero.direction,"assets/Sprites/bullet.png")
+        self.bullet = bullet.Bullet(self.hero.rect.centerx, self.hero.rect.centery,"assets/Sprites/bullet.png")
+        self.all_sprites = pygame.sprite.Group()
+    def quit(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
 
 
     def mainLoop(self):
@@ -46,11 +51,10 @@ class Controller:
         :param = None
         :returns = None
         '''
-        background = pygame.image.load(self.background_pic)
         background_size = self.screen.get_size()
-        background_rect = background.get_rect()
+        background_rect = self.background.get_rect()
         background_screen = pygame.display.set_mode(background_size)
-        background_screen.blit(background, background_rect)
+        background_screen.blit(self.background, background_rect)
         my_font = pygame.font.SysFont(None, 40)
         title_font = pygame.font.SysFont(None, 50)
         name_of_game = title_font.render('Space Run', False, self.white)
@@ -58,16 +62,24 @@ class Controller:
         background_screen.blit(name_of_game, ((self.width / 3) + 50, self.height / 4))
         background_screen.blit(instructions, ((self.width / 3) - 220, self.height / 1.5))
         pygame.display.flip()
-        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if(event.key == pygame.K_SPACE):
+                    self.state = "GAME"
+                    self.mainLoop()
 
     def gameLoop(self):
-        while self.state == "GAME":
-            background = pygame.image.load(self.background_pic)
-            background_size = self.screen.get_size()
-            background_rect = background.get_rect()
-            background_screen = pygame.display.set_mode(background_size)
-            background_screen.blit(background, background_rect)
-            for img in self.hero.run_sprite:
-
-            for event in pygame.event.get():
-                pass
+        x = 0
+        rect_w = self.background.get_rect().width
+        while self.run:
+            x_end = x % rect_w
+            self.screen.blit(self.background,(x_end - rect_w , 0))
+            if x_end < self.width:
+                self.screen.blit(self.background,(x_end , 0))
+            x -= 15
+            self.hero.run(self.run,self.hero,self.all_sprites,self.screen)
+            pygame.display.update()
+            self.clock.tick(self.FPS)
+            self.quit()

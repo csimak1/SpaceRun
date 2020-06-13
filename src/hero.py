@@ -1,19 +1,17 @@
 import pygame
+import sys
 from src import controller
 
 
 class Hero(pygame.sprite.Sprite):
-    def __init__(self, name, x, y, image,direction):
+    def __init__(self, name, x, y, image):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.image = pygame.image.load(image).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.direction = direction
-        self.obj = controller.Controller()
-        self.state = self.obj.hero_state
-        self.screen = self.obj.screen
+        self.state = "RUN"
         self.run_sprite = ["assets/Sprites/run 1.png", "assets/Sprites/run 2.png", "assets/Sprites/run 3.png",
                            "assets/Sprites/run 4.png", "assets/Sprites/run 5.png", "assets/Sprites/run 6.png"]
         self.run_index = 0
@@ -29,8 +27,13 @@ class Hero(pygame.sprite.Sprite):
                                  "assets/Sprites/runshoot5.png", "assets/Sprites/runshoot6.png"]
         self.run_shoot_index = 0
 
+    def quit(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
 
-    def run(self):
+
+    def run(self,state,hero,sprite_list,screen):
         '''
         this method cycles through images that make the hero look like it is running.
         :param = None
@@ -38,12 +41,19 @@ class Hero(pygame.sprite.Sprite):
         '''
         x = self.rect.x
         y = self.rect.y
-        while self.state == "RUN":
+        while state:
             self.image = pygame.image.load(self.run_sprite[self.run_index]).convert_alpha()
             self.rect = self.image.get_rect()
             self.rect.x = x
             self.rect.y = y
             self.run_index = (self.run_index+1) % len(self.run_sprite)
+            sprite_list.add(hero)
+            pygame.time.wait(100)
+            sprite_list.draw(screen)
+            break
+
+
+
 
 
 
