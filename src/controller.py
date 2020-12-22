@@ -12,23 +12,20 @@ class Controller:
     def __init__(self, width=800, height=400):
         self.screen = pygame.display.set_mode((width, height))
         self.clock = pygame.time.Clock()
-        self.FPS = 60
+        self.FPS = 30
         self.background= pygame.image.load('assets/Sprites/space.png').convert_alpha()
-        self.state = "BEGIN"
+        self.game_state = "BEGIN"
+        self.hero_state = "RUN"
         self.width = width
         self.height = height
         self.white = (255,255,255)
-        self.jump = True
-        self.run = True
+        self.alive = True
         self.hero = hero.Hero("Johnny", 100, 265, "assets/Sprites/run 1.png")
         self.wall = wall.Wall(self.width / 4, self.height - 240, 'assets/Sprites/stoneWall.png')
         self.coin = coin.Coin(self.width / 5, self.height - 240, 'assets/Sprites/goldCoin1.png')
         self.bullet = bullet.Bullet(self.hero.rect.centerx, self.hero.rect.centery,"assets/Sprites/bullet.png")
-        self.all_sprites = pygame.sprite.Group()
-    def quit(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
+        self.x = 0
+        self.all_sprites = pygame.sprite.Group((self.hero),)
 
 
     def mainLoop(self):
@@ -37,12 +34,12 @@ class Controller:
         :param = None
         :returns = None
         '''
-        while self.run:
-            if self.state == "BEGIN":
+        while self.alive:
+            if self.game_state == "BEGIN":
                 self.gameIntroScreen()
-            elif self.state == "GAME":
+            elif self.game_state == "GAME":
                 self.gameLoop()
-            elif self.state == "LOSE":
+            elif self.game_state == "LOSE":
                 self.gameOverScreen()
 
     def gameIntroScreen(self):
@@ -67,19 +64,28 @@ class Controller:
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if(event.key == pygame.K_SPACE):
-                    self.state = "GAME"
+                    self.game_state = "GAME"
                     self.mainLoop()
+    def draw_background(self):
+        rect_w = self.background.get_rect().width
+        x_end = self.x % rect_w
+        self.screen.blit(self.background,(x_end - rect_w , 0))
+        if x_end < self.width:
+            self.screen.blit(self.background,(x_end , 0))
+        self.x -= 20
 
     def gameLoop(self):
-        x = 0
-        rect_w = self.background.get_rect().width
-        while self.run:
-            x_end = x % rect_w
-            self.screen.blit(self.background,(x_end - rect_w , 0))
-            if x_end < self.width:
-                self.screen.blit(self.background,(x_end , 0))
-            x -= 15
-            self.hero.run(self.run,self.hero,self.all_sprites,self.screen)
+        while self.alive:
+            self.draw_background()
+            self.hero.run()
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if(event.key == pygame.K_SPACE):
+                            self.draw_background()
+                            self.hero.jump()
+                    elif(event.key == pygame.K_Z):
+                        self.hero.run_shoot()
+            self.all_sprites.update()
+            self.all_sprites.draw(self.screen)
             pygame.display.update()
             self.clock.tick(self.FPS)
-            self.quit()

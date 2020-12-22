@@ -10,13 +10,13 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y = y
         self.current_state = ""
 
-    def update(self):
+    def update(self, shoot_state):
         '''
         this method updates the bullet and moves it across the screen when the hero fires.
         :param = None
         :returns = None
         '''
-        if self.direction == "right":
+
             self.rect.x += 15
     def position(self):
         '''
