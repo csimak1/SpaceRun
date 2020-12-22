@@ -16,8 +16,7 @@ class Bullet(pygame.sprite.Sprite):
         :param = None
         :returns = None
         '''
-
-            self.rect.x += 15
+        self.rect.x += 15
     def position(self):
         '''
         this method returns the positon of the sprite to a text file
