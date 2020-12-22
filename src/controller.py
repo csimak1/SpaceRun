@@ -77,14 +77,18 @@ class Controller:
     def gameLoop(self):
         while self.alive:
             self.draw_background()
-            self.hero.run()
+            if(self.hero.state = "RUN"):
+                self.hero.run()
+            if(self.hero.state = "JUMP"):
+                self.hero.jump()
+            if(self.hero.state = "R_SHOOT"):
+                self.hero.run_shoot()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if(event.key == pygame.K_SPACE):
-                            self.draw_background()
-                            self.hero.jump()
+                            self.hero.state = "JUMP"
                     elif(event.key == pygame.K_Z):
-                        self.hero.run_shoot()
+                        self.hero.state = "R_SHOOT"
             self.all_sprites.update()
             self.all_sprites.draw(self.screen)
             pygame.display.update()
