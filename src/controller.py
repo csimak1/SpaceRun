@@ -23,9 +23,11 @@ class Controller:
         self.hero = hero.Hero("Johnny", 100, 265, "assets/Sprites/run 1.png")
         self.wall = wall.Wall(self.width / 4, self.height - 240, 'assets/Sprites/stoneWall.png')
         self.coin = coin.Coin(self.width / 5, self.height - 240, 'assets/Sprites/goldCoin1.png')
-        self.bullet = bullet.Bullet(self.hero.rect.centerx, self.hero.rect.centery,"assets/Sprites/bullet.png")
+        self.bullet = None
         self.x = 0
         self.all_sprites = pygame.sprite.Group((self.hero),)
+        self.clock = pygame.time.Clock()
+        self.game_speed = 10
 
 
     def mainLoop(self):
@@ -76,20 +78,29 @@ class Controller:
 
     def gameLoop(self):
         while self.alive:
-            self.draw_background()
-            if(self.hero.state = "RUN"):
-                self.hero.run()
-            if(self.hero.state = "JUMP"):
-                self.hero.jump()
-            if(self.hero.state = "R_SHOOT"):
-                self.hero.run_shoot()
+            self.clock.tick(self.game_speed)
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if(event.key == pygame.K_SPACE):
                             self.hero.state = "JUMP"
-                    elif(event.key == pygame.K_Z):
+                    elif(event.key == pygame.K_z and self.hero.state != "JUMP" ):
                         self.hero.state = "R_SHOOT"
+                        if self.bullet is not None:
+                            self.bullet.kill()
+                        self.bullet = bullet.Bullet(self.hero.rect.centerx, self.hero.rect.centery,"assets/Sprites/bullet.png")
+                        self.all_sprites.add(self.bullet)
+                    elif event.type == pygame.QUIT:
+                        sys.exit()
+            self.draw_background()
+            if self.hero.state == "RUN":
+                self.hero.run()
+            if self.hero.state == "JUMP":
+                self.hero.jump()
+            if self.hero.state == "R_SHOOT":
+                self.hero.run_shoot()
+                self.bullet.update()
+                if self.bullet.rect.x > 800:
+                    self.hero.state = "RUN"
             self.all_sprites.update()
             self.all_sprites.draw(self.screen)
-            pygame.display.update()
-            self.clock.tick(self.FPS)
+            pygame.display.flip()

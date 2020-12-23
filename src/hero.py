@@ -12,7 +12,6 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.state = "RUN"
-        self.jump_state = False
         self.run_sprite = ["assets/Sprites/run 1.png", "assets/Sprites/run 2.png", "assets/Sprites/run 3.png",
                            "assets/Sprites/run 4.png", "assets/Sprites/run 5.png", "assets/Sprites/run 6.png"]
         self.run_index = 0
@@ -24,15 +23,17 @@ class Hero(pygame.sprite.Sprite):
                                  "assets/Sprites/runshoot3.png", "assets/Sprites/runshoot4.png",
                                  "assets/Sprites/runshoot5.png", "assets/Sprites/runshoot6.png"]
         self.run_shoot_index = 0
-        self.run_speed = 75
-        self.jump_speed = 25
+        self.run_speed = 6
+        self.jump_speed = 6
         self.clock = pygame.time.Clock()
+        self.jump_up = True
+        self.jump_down = False
 
     def quit(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-                
+
     def getCoords(self):
         return str(self.rect.x) + ", " + str(self.rect.y)
 
@@ -45,14 +46,12 @@ class Hero(pygame.sprite.Sprite):
         '''
         x = self.rect.x
         y = self.rect.y
-        if self.state == "RUN":
-            self.image = pygame.image.load(self.run_sprite[self.run_index]).convert_alpha()
-            self.rect = self.image.get_rect()
-            self.rect.x = x
-            self.rect.y = y
-            self.run_index = (self.run_index+1) % len(self.run_sprite)
-            pygame.time.wait(self.run_speed)
-            self.quit()
+        self.image = pygame.image.load(self.run_sprite[self.run_index]).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.run_index = (self.run_index+1) % len(self.run_sprite)
+        self.quit()
 
 
 
@@ -68,18 +67,38 @@ class Hero(pygame.sprite.Sprite):
         :param = None
         :returns = None
         '''
-        gravity = -1
+        done = False
+        x = self.rect.x
+        y = self.rect.y
         self.image = pygame.image.load(self.jump_up_sprite).convert_alpha()
         self.rect = self.image.get_rect()
-        if self.state == "JUMP":
-                self.rect.y += gravity
-                if self.rect.y == 230:
-                    gravity = 1
-                    self.rect.y += gravity
-                if self.rect.y == 265:
-                    self.state = "RUN"
-                    self.run()
-                self.quit()
+        self.rect.x = x
+        self.rect.y = y
+        self.quit()
+
+        if(self.jump_up):
+            if(self.rect.y <= 100):
+                self.jump_up = False
+                self.jump_down = True
+            if(self.rect.y > 100):
+                self.rect.y += -50
+
+
+
+        if(self.jump_down):
+            self.image = pygame.image.load(self.jump_down_sprite).convert_alpha()
+            if(self.rect.y >= 265):
+                self.rect.y = 265
+                self.jump_down = False
+                done = True
+            if(self.rect.y < 265):
+                self.rect.y += 50
+
+        if (done == True):
+            self.jump_up = True
+            self.state = "RUN"
+
+
 
 
 
@@ -96,6 +115,7 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.run_shoot_index = (self.run_shoot_index+1) % len(self.run_shoot_sprite)
+        
 
     def position(self):
         '''
