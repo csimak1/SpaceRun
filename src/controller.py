@@ -7,6 +7,7 @@ from src import bullet
 from src import spikes
 from src import wall
 from src import coin
+from src import hs_data
 
 
 class Controller:
@@ -99,7 +100,7 @@ class Controller:
     def draw_obstacles(self):
         t1 = time.time()
 
-        if (((int(t1) - int(self.t0)) % 8 ) == 0) and (not self.wall.alive()) and (not self.spikes.alive()) and (not self.coin.alive()) :
+        if (((int(t1) - int(self.t0)) % 7 ) == 0) and (not self.wall.alive()) and (not self.spikes.alive()) and (not self.coin.alive()) :
             self.wall = wall.Wall(random.randrange(400,2500), 255, 'assets/Sprites/stoneWall.png')
             self.coin = coin.Coin(random.randrange(400,2500), 265, 'assets/Sprites/goldCoin1.png')
             self.spikes = spikes.Spikes(random.randrange(400,2500), 275,'assets/Sprites/spike.png' )
@@ -123,7 +124,7 @@ class Controller:
             if (int(score) - int(self.t0)) % 2 == 0:
                 mult = random.randrange(0,3)
                 self.score_count += mult
-            myfont = pygame.font.SysFont('impact', 20)
+            myfont = pygame.font.SysFont('impact', 40)
             message = myfont.render('Score: '+ str(self.score_count), False, (255,255,255))
             self.screen.blit(message,[600, 30])
             pygame.display.flip()
@@ -181,6 +182,7 @@ class Controller:
 
             if self.hero.crash_check(self.hero, self.obj_sprites):
                 self.game_state = "LOSE"
+                hs_data.enter_score(self.score_count)
                 self.mainLoop()
 
 
@@ -200,12 +202,25 @@ class Controller:
         background_rect = self.background2.get_rect()
         background_screen = pygame.display.set_mode(background_size)
         background_screen.blit(self.background2, background_rect)
-        my_font = pygame.font.SysFont("impact", 30)
+        top_five = hs_data.top_five()
+        data_font = pygame.font.SysFont("impact", 30)
         title_font = pygame.font.SysFont("impact", 50)
-        game_over = title_font.render('GAME OVER!!!!', False, (255,0,0))
-        your_score = my_font.render('Your Score: '+ str(self.score_count), False, self.white)
-        background_screen.blit(game_over, ((self.width / 3) + 50, self.height / 4))
-        background_screen.blit(your_score, ((self.width / 3) - 200, self.height / 1.5))
+        game_over = title_font.render('GAME OVER!', False, (255,0,0))
+        your_score = data_font.render('Your Score: '+ str(self.score_count), False, self.white)
+        leaders = title_font.render('LEADERBOARD' , False, self.white)
+        first = data_font.render('1: '+ str(top_five[0]), False, self.white)
+        second = data_font.render('2: '+ str(top_five[1]), False, self.white)
+        third = data_font.render('3: '+ str(top_five[2]), False, self.white)
+        fourth = data_font.render('4: '+ str(top_five[3]), False, self.white)
+        fifth = data_font.render('5: '+ str(top_five[4]), False, self.white)
+        background_screen.blit(game_over, (75, 20))
+        background_screen.blit(your_score, (75, 100))
+        background_screen.blit(leaders, (350, 20))
+        background_screen.blit(first, (350, 100))
+        background_screen.blit(second, (350, 150))
+        background_screen.blit(third, (350, 200))
+        background_screen.blit(fourth, (350, 250))
+        background_screen.blit(fifth, (350, 300))
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:

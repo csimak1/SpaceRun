@@ -16,7 +16,7 @@ class Coin(pygame.sprite.Sprite):
         self.spin_index = 0
 
     def move(self):
-        self.rect.x -= 20
+        self.rect.x -= 25
 
     def spin(self):
         '''

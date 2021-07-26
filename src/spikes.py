@@ -12,7 +12,7 @@ class Spikes(pygame.sprite.Sprite):
         self.current_state = ""
 
     def move(self):
-        self.rect.x -= 20
+        self.rect.x -= 25
 
     def position(self):
         '''
