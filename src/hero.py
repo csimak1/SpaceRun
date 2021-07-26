@@ -53,10 +53,11 @@ class Hero(pygame.sprite.Sprite):
         self.run_index = (self.run_index+1) % len(self.run_sprite)
         self.quit()
 
+    def col_check(self, hero , collect_list):
+         return pygame.sprite.spritecollide(hero, collect_list, True, pygame.sprite.collide_rect_ratio(0.5))
 
-
-
-
+    def crash_check(self, hero, obj_list):
+        return pygame.sprite.spritecollide(hero, obj_list, False, pygame.sprite.collide_rect_ratio(0.5))
 
 
 
@@ -77,11 +78,11 @@ class Hero(pygame.sprite.Sprite):
         self.quit()
 
         if(self.jump_up):
-            if(self.rect.y <= 100):
+            if(self.rect.y <= 75):
                 self.jump_up = False
                 self.jump_down = True
-            if(self.rect.y > 100):
-                self.rect.y += -50
+            if(self.rect.y > 75):
+                self.rect.y += -35
 
 
 
@@ -92,7 +93,7 @@ class Hero(pygame.sprite.Sprite):
                 self.jump_down = False
                 done = True
             if(self.rect.y < 265):
-                self.rect.y += 50
+                self.rect.y += 55
 
         if (done == True):
             self.jump_up = True
@@ -115,7 +116,7 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.run_shoot_index = (self.run_shoot_index+1) % len(self.run_shoot_sprite)
-        
+
 
     def position(self):
         '''

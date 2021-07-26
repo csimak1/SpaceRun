@@ -10,6 +10,10 @@ class Spikes(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.current_state = ""
+
+    def move(self):
+        self.rect.x -= 20
+
     def position(self):
         '''
         this method returns the positon of the sprite to a text file

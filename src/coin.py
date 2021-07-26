@@ -14,6 +14,10 @@ class Coin(pygame.sprite.Sprite):
         "assets/Sprites/goldCoin6.png", "assets/Sprites/goldCoin7.png", "assets/Sprites/goldCoin8.png",
         "assets/Sprites/goldCoin9.png"]
         self.spin_index = 0
+
+    def move(self):
+        self.rect.x -= 20
+
     def spin(self):
         '''
         this method spins the coin
@@ -28,14 +32,7 @@ class Coin(pygame.sprite.Sprite):
         self.rect.y = y
         # where im getting the error
         self.spin_index = (self.spin_index+1) % len(self.spin_sprite)
-    def update(self):
-        '''
-        this method checks the state of the coin and updates it/spins it.
-        :param = None
-        :returns = None
-        '''
-        if self.state == "SPIN":
-            self.spin()
+
     def position(self):
         '''
         this method returns the positon of the sprite to a text file

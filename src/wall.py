@@ -9,6 +9,17 @@ class Wall(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.current_state = ""
+
+    def move(self):
+        self.rect.x -= 20
+
+    def pos(self,wall):
+        return str(wall.rect.x) + ", " + str(wall.rect.y)
+
+    def get_coord(self,wall):
+        return wall.rect.x < 0
+
+
     def position(self):
         '''
         this method returns the positon of the sprite to a text file
