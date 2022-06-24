@@ -4,5 +4,8 @@ This game is a 2-D sidescroller. The player spawns in as a character that runs s
 
 Best of Luck!!
 
-## How to play: 
-type in terminal "python3 main.py"
+## How to play:
+type in terminal:  
+1. "pip3 install pygame"
+2. "python3 main.py"
+
